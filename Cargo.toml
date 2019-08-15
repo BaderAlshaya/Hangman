@@ -4,8 +4,15 @@
 # distribution of this software for license terms.
 
 [package]
-name = "Hangman"
+name = "hangman"
 version = "0.1.0"
 authors = ["Bader Alshaya <alshayabader@gmail.com>"]
+edition = "2018"
+
+[lib]
+name = "hangman"
+path = "src/lib.rs"
 
 [dependencies]
+rand = "0.3"
+colored = "1.8"

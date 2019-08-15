@@ -3,15 +3,15 @@
 Copyright (c) 2019 Bader Alshaya
 
 This is a mockup program of the famous Hangman word game. Words
-are inputted from `words.txt`. A modified copy of all English
-words as granted from a Macbook device. The words in the text
-file are seperated by commas.
+input are taken from `----`, and must be single English words
+stored as text in a .txt file, seperated by commas.
 
 
 ## Build and Run
 
 Build this program and library with `cargo build`. You can
-run the program with `cargo run`.
+run the program with `cargo run`. You will need to pass a
+`--` before the program flag.
 
 To build or run an optimized version, use `cargo --release`.
 

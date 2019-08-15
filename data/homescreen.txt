@@ -1,0 +1,22 @@
+-------------------------
+      INSTRUCTIONS
+-------------------------
+1. Stop the game and view your progress by entering '0'.
+2. Guess a letter by entering one English character at a time.
+3. During each round you are allowed to guess up to 7 letters wrong.
+-------------------------
+|            ____       |
+|           |    |      |
+|      /\   |    Ø      |
+|     GAME  |   /|\     | 
+|      ON   |    |      |
+|      \/   |   / \     |
+|           |           |
+|           |           |
+|    *******|*******    |
+|   |               |   |
+|   |    HANGMAN    |   |
+|   |               |   |
+|    ***************    |
+|                       |
+-------------------------
