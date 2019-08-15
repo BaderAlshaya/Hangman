@@ -20,7 +20,7 @@ You will need to pass a
 
 To build or run an optimized version, use `cargo --release`.
 
-Run `cargo test` to test the current version.
+Use `cargo test` to run the unit tests for the current version.
 
 
 ### License
