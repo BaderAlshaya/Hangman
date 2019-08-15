@@ -2,7 +2,9 @@
 
 Copyright (c) 2019 Bader Alshaya
 
-This is a mockup program of the infamous Hangman word game. The [words list](https://www.mit.edu/~ecprice/wordlist.10000) was pulled from the given website and was modified to only include non-compound English words that are less than 10-characters long. Finally, the list was stored as a text file inside the .txt file `data/words.txt` to use it as a simple data base for this program.
+## Highlights
+
+This is a mockup program of the infamous Hangman word game. The [words list](https://www.mit.edu/~ecprice/wordlist.10000) was pulled from the given website and was modified to only include non-compound English words that are less than 10-characters long. The list was stored as a .txt file at `data/words.txt`.
 
 Other public sources used in this program will be listed below:
 - https://github.com/mackwic/colored
