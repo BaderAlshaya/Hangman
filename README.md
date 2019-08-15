@@ -10,12 +10,13 @@ stored as text in a .txt file, seperated by commas.
 ## Build and Run
 
 Build this program and library with `cargo build`. You can
-run the program with `cargo run`. You will need to pass a
-`--` before the program flag.
+run the program with `cargo run`.
+You will need to pass a
+`--` before a program flag.
 
 To build or run an optimized version, use `cargo --release`.
 
-Run `cargo test` to do some simple testing.
+Run `cargo test` to test the current version.
 
 
 ## License
