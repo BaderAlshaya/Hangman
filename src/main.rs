@@ -3,6 +3,14 @@
 // Please see the file LICENSE in the source
 // distribution of this software for license terms.
 
+use hangman::game_init;
+use hangman::is_round_complete;
+use hangman::print_homescreen;
+use hangman::round_init;
+use hangman::scoreboard;
+use hangman::show_progress;
+use hangman::submit_guess;
+use hangman::user_guess;
 use hangman::*;
 
 fn main() {
