@@ -42,8 +42,12 @@ pub fn print_homescreen() {
     let file = File::open("data/homescreen.txt").unwrap();
     let buff = BufReader::new(file);
 
+    // Clear the Terminal Screen
+    print!("\x1B[2J");
+
+    // Print each line in the file
     for line in buff.lines() {
-        println!("{}", line.unwrap());
+        println!("{}", line.unwrap().yellow().bold());
     }
 }
 
@@ -121,13 +125,13 @@ pub fn show_progress(round: &RoundProgress) {
 
         RoundStatus::Lost => {
             println!("-------------------------");
-            println!("\n{}\n", "YOU LOST THE ROUND!".red());
+            println!("\n{}\n", "YOU LOST THIS ROUND!".red().bold());
             println!("It was ({})", get_hidden_word(&round).underline());
         }
 
         RoundStatus::Won => {
             println!("-------------------------");
-            println!("\n{}\n", "YOU WON THE ROUND!".green());
+            println!("\n{}\n", "YOU WON THIS ROUND!".green().bold());
             println!("It Was: {}", get_hidden_word(&round).underline());
         }
     }
@@ -143,7 +147,7 @@ pub fn user_guess() -> char {
 
     // Evaluate if input is a valid single English character
     match io::stdin().read_line(&mut input) {
-        Ok(_) => result = evaluate_input(&input),
+        Ok(_) => result = evaluate_input(&input.to_lowercase()),
         Err(_) => result = '!',
     }
 
@@ -220,5 +224,19 @@ impl fmt::Display for RoundStatus {
             RoundStatus::Lost => write!(f, "Lost"),
             RoundStatus::Won => write!(f, "Won"),
         }
+    }
+}
+
+// Print the game details
+pub fn scoreboard(game: &GameProgress) {
+    let mut count = 1;
+    for round in &game.rounds {
+        println!("Round {}", count);
+        println!("- Hidden Word: {}", get_hidden_word(&round));
+        println!("- Round Status: {}:", round.status);
+        println!("- Round Points: {}:", round.points);
+        println!("- Failed Attempts: {}:", round.failed_attempts);
+        println!("-------------------------");
+        count += 1;
     }
 }

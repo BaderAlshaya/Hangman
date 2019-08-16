@@ -7,6 +7,7 @@ use hangman::game_init;
 use hangman::is_round_complete;
 use hangman::print_homescreen;
 use hangman::round_init;
+use hangman::scoreboard;
 use hangman::show_progress;
 use hangman::submit_guess;
 use hangman::user_guess;
@@ -51,7 +52,8 @@ fn main() {
 
         // Count rounds total points
         game.total_points += game.rounds[index].points;
-
-        // {print scoreboard}
     }
+
+    // Show the overall game details and score
+    scoreboard(&game);
 }
