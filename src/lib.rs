@@ -257,3 +257,26 @@ pub fn scoreboard(game: &GameProgress) {
         count += 1;
     }
 }
+
+// Return the evaluated input of the user
+pub fn play_or_stop() -> bool {
+    let mut input = String::new();
+    let result;
+
+    println!("- Enter 0 to exit the game.");
+    println!("- Enter anything to go to the next round.");
+    print!("Your input: ");
+    io::stdout().flush().expect("FAILED!");
+
+    match io::stdin().read_line(&mut input) {
+        Ok(_) => result = input.chars().next().unwrap(),
+        Err(_) => result = '!',
+    }
+    println!("-------------------------");
+
+    if result != '0' && result != '!' {
+        true
+    } else {
+        false
+    }
+}

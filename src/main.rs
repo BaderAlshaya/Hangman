@@ -3,14 +3,7 @@
 // Please see the file LICENSE in the source
 // distribution of this software for license terms.
 
-use hangman::game_init;
-use hangman::is_round_complete;
-use hangman::print_homescreen;
-use hangman::round_init;
-use hangman::scoreboard;
-use hangman::show_progress;
-use hangman::submit_guess;
-use hangman::user_guess;
+use hangman::*;
 
 fn main() {
     let mut game = game_init();
@@ -52,6 +45,11 @@ fn main() {
 
         // Count rounds total points
         game.total_points += game.rounds[index].points;
+
+        // Check whether the user wants to play the next round
+        if game_on {
+            game_on = play_or_stop();
+        }
     }
 
     // Show the overall game details and score
