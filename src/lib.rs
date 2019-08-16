@@ -230,12 +230,29 @@ impl fmt::Display for RoundStatus {
 // Print the game details
 pub fn scoreboard(game: &GameProgress) {
     let mut count = 1;
+
     for round in &game.rounds {
-        println!("Round {}", count);
-        println!("- Hidden Word: {}", get_hidden_word(&round));
-        println!("- Round Status: {}:", round.status);
-        println!("- Round Points: {}:", round.points);
-        println!("- Failed Attempts: {}:", round.failed_attempts);
+        match round.status {
+            RoundStatus::Ongoing => {
+                println!("{}{}", "Round ".cyan(), count.to_string().cyan());
+                println!("{}{}", "- Hidden Word: ".italic(), get_hidden_word(&round).underline().cyan());
+                println!("{}{}", "- Round Status: ".italic(), round.status.to_string().cyan());
+                println!("{}{}", "- Round Points: ".italic(), round.points.to_string().cyan());
+                println!("{}{}", "- Failed Attempts: ".italic(), round.failed_attempts.to_string().cyan());
+            } RoundStatus::Lost => {
+                println!("{}{}", "Round ".red(), count.to_string().red());
+                println!("{}{}", "- Hidden Word: ".italic(), get_hidden_word(&round).underline().red());
+                println!("{}{}", "- Round Status: ".italic(), round.status.to_string().red());
+                println!("{}{}", "- Round Points: ".italic(), round.points.to_string().red());
+                println!("{}{}", "- Failed Attempts: ".italic(), round.failed_attempts.to_string().red());
+            } RoundStatus::Won => {
+                println!("{}{}", "Round ".green(), count.to_string().green());
+                println!("{}{}", "- Hidden Word: ".italic(), get_hidden_word(&round).underline().green());
+                println!("{}{}", "- Round Status: ".italic(), round.status.to_string().green());
+                println!("{}{}", "- Round Points: ".italic(), round.points.to_string().green());
+                println!("{}{}", "- Failed Attempts: ".italic(), round.failed_attempts.to_string().green());
+            }
+        }
         println!("-------------------------");
         count += 1;
     }
