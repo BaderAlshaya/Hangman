@@ -11,7 +11,7 @@ use hangman::scoreboard;
 use hangman::show_progress;
 use hangman::submit_guess;
 use hangman::user_guess;
-use hangman::*;
+use hangman::play_or_stop;
 
 fn main() {
     let mut game = game_init();
