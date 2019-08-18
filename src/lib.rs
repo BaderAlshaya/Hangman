@@ -4,7 +4,7 @@
 // distribution of this software for license terms.
 
 use colored::*;
-use rand::Rng;
+use rand::*;
 use std::fmt;
 use std::fs::File;
 use std::io;
@@ -16,14 +16,15 @@ pub const MAX_FAILED_ATTEMPTS: u8 = 7;
 
 pub struct GameProgress {
     pub rounds: Vec<RoundProgress>,
+    pub words_list: Vec::<String>,
     pub total_points: i64,
 }
 
 pub struct RoundProgress {
     pub hidden_word: Vec<HiddenChar>,
+    pub failed_attempts: Vec<char>,
     pub status: RoundStatus,
     pub points: i64,
-    pub failed_attempts: u8,
 }
 
 pub struct HiddenChar {
@@ -37,53 +38,47 @@ pub enum RoundStatus {
     Won,
 }
 
-// Print the homescreen data (logo + instructions)
-pub fn print_homescreen() {
-    let file = File::open("data/homescreen.txt").unwrap();
-    let buff = BufReader::new(file);
-
-    // Clear the Terminal Screen
-    print!("\x1B[2J");
-
-    // Print each line in the file
-    for line in buff.lines() {
-        println!("{}", line.unwrap().yellow().bold());
-    }
-}
-
 // Game initializer
 pub fn game_init() -> GameProgress {
     GameProgress {
+        words_list: get_list(),
         rounds: Vec::new(),
         total_points: 0,
     }
 }
 
 // Round initializer
-pub fn round_init() -> RoundProgress {
+pub fn round_init(rand_word: String) -> RoundProgress {
     RoundProgress {
-        hidden_word: random_word(),
+        hidden_word: hide_word(rand_word),
+        failed_attempts: Vec::new(),
         status: RoundStatus::Ongoing,
         points: 0,
-        failed_attempts: 0,
     }
 }
 
-// Return a random word from the words file as hidden letters
-pub fn random_word() -> Vec<HiddenChar> {
+// Return a random list of words assigned for this game
+pub fn get_list() -> Vec<String> {
     let file = File::open("data/words.txt").unwrap();
     let buff = BufReader::new(file);
-    let mut result = Vec::<HiddenChar>::new();
+    let mut words = Vec::<String>::new();
 
     // Read the words from the file into a vector of strings
-    let mut words = Vec::<String>::new();
     for word in buff.lines() {
         words.push(word.unwrap());
     }
 
-    // Index a random word from the vector and use it as the hidden word
-    let mut rand_word = String::new();
-    rand_word.push_str(&words[rand::thread_rng().gen_range(0, words.len())]);
+    // Shuffle the list of words
+    thread_rng().shuffle(&mut words);
+
+    words
+}
+
+// Return a random word from the words file as hidden letters
+pub fn hide_word(rand_word: String) -> Vec<HiddenChar> {
+    let mut result = Vec::<HiddenChar>::new();
+
+    // rand_word.push_str(&game.words_list.remove(rand::thread_rng().gen_range(0, game.words_list.len())));
     for ch in rand_word.chars() {
         result.push(HiddenChar {
             character: ch,
@@ -117,7 +112,7 @@ pub fn show_progress(round: &RoundProgress) {
         current_progress.push(' ');
     }
 
-    println!("\nFailed Attempts [{}]\n", round.failed_attempts);
+    println!("\nFailed Attempts [{}]\n", round.failed_attempts.len());
     println!("PROGRESS: {}\n", current_progress);
 
     match round.status {
@@ -177,15 +172,19 @@ pub fn evaluate_input(input: &str) -> char {
 // Evaluate the guess and update round progress
 pub fn submit_guess(round: &mut RoundProgress, guess: char) {
     let mut failed_attempt = true;
+    let mut is_duplicate = false;
     let mut all_guessed = true;
     let mut points = 1;
 
     // Check if user guess matches any hidden characters
     for ch in &mut round.hidden_word {
-        if ch.character == guess {
+        if ch.character == guess && ch.is_hidden {
             ch.is_hidden = false;
-            points *= points + 1;
             failed_attempt = false;
+            points *= points + 1;
+        } else if ch.character == guess && !ch.is_hidden {
+            is_duplicate = true;
+            points = 0; // No points for correct, but repeated guess
         }
         if ch.is_hidden {
             all_guessed = false;
@@ -194,15 +193,27 @@ pub fn submit_guess(round: &mut RoundProgress, guess: char) {
 
     // Update guess attempts and points
     if failed_attempt {
-        round.failed_attempts += 1;
+        // Check that the character was not used at the same round
+        for ch in &round.failed_attempts {
+            if guess == *ch {
+                is_duplicate = true;
+                break;
+            }
+        }
+
+        if is_duplicate {
+            print!("\n{} {} ", "You already entered the letter".purple(), guess);
+        } else {
+            round.failed_attempts.push(guess);
+        }
     } else {
-        round.points = points;
+        round.points += points;
     }
 
     // Update round status
     if all_guessed {
         round.status = RoundStatus::Won;
-    } else if round.failed_attempts == MAX_FAILED_ATTEMPTS {
+    } else if round.failed_attempts.len() == MAX_FAILED_ATTEMPTS as usize {
         round.status = RoundStatus::Lost;
     }
 }
@@ -238,19 +249,19 @@ pub fn scoreboard(game: &GameProgress) {
                 println!("{}{}", "- Hidden Word: ".italic(), get_hidden_word(&round).underline().cyan());
                 println!("{}{}", "- Round Status: ".italic(), round.status.to_string().cyan());
                 println!("{}{}", "- Round Points: ".italic(), round.points.to_string().cyan());
-                println!("{}{}", "- Failed Attempts: ".italic(), round.failed_attempts.to_string().cyan());
+                println!("{}{}", "- Failed Attempts: ".italic(), round.failed_attempts.len().to_string().cyan());
             } RoundStatus::Lost => {
                 println!("{}{}", "Round ".red(), count.to_string().red());
                 println!("{}{}", "- Hidden Word: ".italic(), get_hidden_word(&round).underline().red());
                 println!("{}{}", "- Round Status: ".italic(), round.status.to_string().red());
                 println!("{}{}", "- Round Points: ".italic(), round.points.to_string().red());
-                println!("{}{}", "- Failed Attempts: ".italic(), round.failed_attempts.to_string().red());
+                println!("{}{}", "- Failed Attempts: ".italic(), round.failed_attempts.len().to_string().red());
             } RoundStatus::Won => {
                 println!("{}{}", "Round ".green(), count.to_string().green());
                 println!("{}{}", "- Hidden Word: ".italic(), get_hidden_word(&round).underline().green());
                 println!("{}{}", "- Round Status: ".italic(), round.status.to_string().green());
                 println!("{}{}", "- Round Points: ".italic(), round.points.to_string().green());
-                println!("{}{}", "- Failed Attempts: ".italic(), round.failed_attempts.to_string().green());
+                println!("{}{}", "- Failed Attempts: ".italic(), round.failed_attempts.len().to_string().green());
             }
         }
         println!("-------------------------");
@@ -263,9 +274,9 @@ pub fn play_or_stop() -> bool {
     let mut input = String::new();
     let result;
 
-    println!("- Enter 0 to exit the game.");
-    println!("- Enter anything to go to the next round.");
-    print!("Your input: ");
+    println!("{}", "- Enter 0 to exit the game.".yellow());
+    println!("{}", "- Enter anything to go to the next round.".yellow());
+    print!("{}", "Your input: ".yellow());
     io::stdout().flush().expect("FAILED!");
 
     match io::stdin().read_line(&mut input) {
@@ -278,5 +289,19 @@ pub fn play_or_stop() -> bool {
         true
     } else {
         false
+    }
+}
+
+// Print the homescreen data (logo + instructions)
+pub fn print_homescreen() {
+    let file = File::open("data/homescreen.txt").unwrap();
+    let buff = BufReader::new(file);
+
+    // Clear the Terminal Screen
+    print!("\x1B[2J");
+
+    // Print each line in the file
+    for line in buff.lines() {
+        println!("{}", line.unwrap().yellow().bold());
     }
 }
