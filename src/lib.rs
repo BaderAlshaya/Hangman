@@ -204,9 +204,11 @@ pub fn submit_guess(round: &mut RoundProgress, guess: char) {
         if is_duplicate {
             print!("\n{} {} ", "You already entered the letter".purple(), guess);
         } else {
+            println!("\n{}", "WRONG!".bold().red());
             round.failed_attempts.push(guess);
         }
     } else {
+        println!("\n{}", "CORRECT!".bold().green());
         round.points += points;
     }
 
@@ -274,7 +276,7 @@ pub fn play_or_stop() -> bool {
     let mut input = String::new();
     let result;
 
-    println!("{}", "- Enter 0 to exit the game.".yellow());
+    println!("{}", "- Enter 0 to exit the game and view your results.".yellow());
     println!("{}", "- Enter anything to go to the next round.".yellow());
     print!("{}", "Your input: ".yellow());
     io::stdout().flush().expect("FAILED!");
@@ -285,11 +287,7 @@ pub fn play_or_stop() -> bool {
     }
     println!("-------------------------");
 
-    if result != '0' && result != '!' {
-        true
-    } else {
-        false
-    }
+    result != '0' && result != '!'
 }
 
 // Print the homescreen data (logo + instructions)

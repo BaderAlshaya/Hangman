@@ -25,7 +25,7 @@ fn main() {
         let mut index = 0;
 
         // Check if there are still unique words to guess
-        if game.words_list.len() == 0 {
+        if game.words_list.is_empty() {
             println!("CONGRATULATIONS, YOU GUESSED ALL THE WORDS!");
             break;
         }
