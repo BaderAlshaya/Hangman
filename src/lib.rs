@@ -57,6 +57,20 @@ pub fn round_init(rand_word: &String) -> RoundProgress {
     }
 }
 
+// Print the homescreen data (logo + instructions)
+pub fn print_homescreen() {
+    let file = File::open("data/homescreen.txt").unwrap();
+    let buff = BufReader::new(file);
+
+    // Clear the Terminal Screen
+    print!("\x1B[2J");
+
+    // Print each line in the file
+    for line in buff.lines() {
+        println!("{}", line.unwrap().yellow().bold());
+    }
+}
+
 // Return a random list of words assigned for this game
 pub fn get_list() -> Vec<String> {
     let file = File::open("data/words.txt").unwrap();
@@ -142,7 +156,7 @@ pub fn user_guess() -> char {
 
     // Evaluate if input is a valid single English character
     match io::stdin().read_line(&mut input) {
-        Ok(_) => result = evaluate_input(&input.to_lowercase()),
+        Ok(_) => result = evaluate_input(&input),
         Err(_) => result = '!',
     }
 
@@ -157,10 +171,12 @@ pub fn user_guess() -> char {
 
 // Return the input evaluation result
 pub fn evaluate_input(input: &str) -> char {
-    if input.trim().len() > 1 {
+    let clean_input = input.replace(" ", "").replace("\n", "").to_lowercase();
+
+    if clean_input.is_empty() || clean_input.len() > 1 {
         '!' // ERROR
     } else {
-        let character = input.chars().next().unwrap();
+        let character = clean_input.chars().next().unwrap();
         if character.is_ascii_alphabetic() || character == '0' {
             character
         } else {
@@ -288,18 +304,4 @@ pub fn play_or_stop() -> bool {
     println!("-------------------------");
 
     result != '0' && result != '!'
-}
-
-// Print the homescreen data (logo + instructions)
-pub fn print_homescreen() {
-    let file = File::open("data/homescreen.txt").unwrap();
-    let buff = BufReader::new(file);
-
-    // Clear the Terminal Screen
-    print!("\x1B[2J");
-
-    // Print each line in the file
-    for line in buff.lines() {
-        println!("{}", line.unwrap().yellow().bold());
-    }
 }
