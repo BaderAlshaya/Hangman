@@ -58,3 +58,23 @@ fn test_get_non_empty_hidden_word() {
         assert_eq!(target_ch.is_hidden, true);
     }
 }
+
+#[test]
+fn test_evaluate_valid_user_input() {
+    assert_eq!(hangman::evaluate_input(&"0"), '0');
+    assert_eq!(hangman::evaluate_input(&"a"), 'a');
+    assert_eq!(hangman::evaluate_input(&"A"), 'a');
+    assert_eq!(hangman::evaluate_input(&"A "), 'a');
+    assert_eq!(hangman::evaluate_input(&" A"), 'a');
+    assert_eq!(hangman::evaluate_input(&" A "), 'a');
+
+}
+
+#[test]
+fn test_evaluate_invalid_user_inputs() {
+    assert_eq!(hangman::evaluate_input(&""), '!');
+    assert_eq!(hangman::evaluate_input(&" "), '!');
+    assert_eq!(hangman::evaluate_input(&"6"), '!');
+    assert_eq!(hangman::evaluate_input(&"@"), '!');
+    assert_eq!(hangman::evaluate_input(&"not char"), '!');
+}
