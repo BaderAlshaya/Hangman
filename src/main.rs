@@ -30,7 +30,7 @@ fn main() {
             break;
         }
 
-        game.rounds.push(round_init(game.words_list.pop().unwrap()));
+        game.rounds.push(round_init(&game.words_list.pop().unwrap()));
 
         round_on = true;
         while game_on && round_on {

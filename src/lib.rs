@@ -48,9 +48,9 @@ pub fn game_init() -> GameProgress {
 }
 
 // Round initializer
-pub fn round_init(rand_word: String) -> RoundProgress {
+pub fn round_init(rand_word: &String) -> RoundProgress {
     RoundProgress {
-        hidden_word: hide_word(rand_word),
+        hidden_word: hide_word(&rand_word),
         failed_attempts: Vec::new(),
         status: RoundStatus::Ongoing,
         points: 0,
@@ -75,7 +75,7 @@ pub fn get_list() -> Vec<String> {
 }
 
 // Return a random word from the words file as hidden letters
-pub fn hide_word(rand_word: String) -> Vec<HiddenChar> {
+pub fn hide_word(rand_word: &String) -> Vec<HiddenChar> {
     let mut result = Vec::<HiddenChar>::new();
 
     // rand_word.push_str(&game.words_list.remove(rand::thread_rng().gen_range(0, game.words_list.len())));
@@ -202,7 +202,7 @@ pub fn submit_guess(round: &mut RoundProgress, guess: char) {
         }
 
         if is_duplicate {
-            print!("\n{} {} ", "You already entered the letter".purple(), guess);
+            print!("\n{} {}\n", "You already entered the letter".purple(), guess);
         } else {
             println!("\n{}", "WRONG!".bold().red());
             round.failed_attempts.push(guess);
