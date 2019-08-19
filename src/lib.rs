@@ -48,7 +48,7 @@ pub fn game_init() -> GameProgress {
 }
 
 // Round initializer
-pub fn round_init(rand_word: &String) -> RoundProgress {
+pub fn round_init(rand_word: &str) -> RoundProgress {
     RoundProgress {
         hidden_word: hide_word(&rand_word),
         failed_attempts: Vec::new(),
@@ -89,7 +89,7 @@ pub fn get_list() -> Vec<String> {
 }
 
 // Return a random word from the words file as hidden letters
-pub fn hide_word(rand_word: &String) -> Vec<HiddenChar> {
+pub fn hide_word(rand_word: &str) -> Vec<HiddenChar> {
     let mut result = Vec::<HiddenChar>::new();
 
     // rand_word.push_str(&game.words_list.remove(rand::thread_rng().gen_range(0, game.words_list.len())));
